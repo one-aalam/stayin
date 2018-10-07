@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
+require('mongoose-schema-jsonschema')(mongoose); // extend with JSON schema
 const createdAttrPlugin = require('./plugins/attr-created');
 const updatedAttrPlugin = require('./plugins/attr-updated');
 
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
 
-const User = new Schema(
+const UserSchema = new Schema(
   {
     username: {
       type: String,
@@ -42,7 +43,8 @@ const User = new Schema(
   }
 );
 
-User.plugin(createdAttrPlugin);
-User.plugin(updatedAttrPlugin, { index: true });
+UserSchema.plugin(createdAttrPlugin);
+UserSchema.plugin(updatedAttrPlugin, { index: true });
 
-exports.User = mongoose.model('User', User, 'users_user');
+exports.User = mongoose.model('User', UserSchema, 'users_user');
+exports.UserJsonSchema = UserSchema.jsonSchema();
