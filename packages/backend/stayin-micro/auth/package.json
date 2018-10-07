@@ -16,6 +16,7 @@
     "extends": "prettier"
   },
   "dependencies": {
+    "ajv": "^6.5.4",
     "bcrypt": "^3.0.1",
     "dotenv": "^6.0.0",
     "jsonwebtoken": "^8.3.0",

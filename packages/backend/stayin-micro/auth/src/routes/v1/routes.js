@@ -10,8 +10,12 @@ const {
   canAccess,
   ifIdConforms
 }                                     = require('../../utils');
+const validation                       = require('../../utils/ajv');
 // User service
 const userSvc                         = require('../../service').user;
+// Schemas
+const UserSchema                      = require('../../models/user').UserJsonSchema;
+const validateUserModel = validation(UserSchema);
 
 // USER
 const hello = rateLimit({window: 5000, limit: 2}, (req, res) => {
@@ -72,11 +76,6 @@ const userLogin = async (req, res) => {
   send(res, 200, { token });
 };
 
-const userSetup = async (req, res) => {
-  const user = await userSvc.setup();
-  send(res, 200, user);
-};
-
 module.exports = cors(router(
     get('/hello/:who', hello),
 
@@ -84,14 +83,11 @@ module.exports = cors(router(
     get('/users', execOrErr(canAccess(users))),
     get('/users/:id', execOrErr(ifIdConforms(userById))),
     // POST
-    post('/users', createUser),
+    post('/users', validateUserModel(createUser)),
     // DELETE
     del('/users/:id', delUser),
     // PUT
-    put('/users/:id', updateUser),
-
-    // SEED
-    get('/setup', userSetup),
+    put('/users/:id', validateUserModel(updateUser)),
 
     // AUTH
     post('/login', userLogin),
