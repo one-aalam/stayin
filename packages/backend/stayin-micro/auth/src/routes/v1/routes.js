@@ -4,11 +4,6 @@ const { sign }                        = require('jsonwebtoken');
 const { compareSync }                 = require('bcrypt');
 const rateLimit                       = require('micro-ratelimit');
 const cors                            = require('micro-cors')();
-// Bootstrap
-const { secret }                      = require('../../config');
-const database                        = require('../../db');
-const modelUser                          = require('../../models/user');
-const modelRole                          = require('../../models/role');
 // middleware, sort of ...
 const {
   execOrErr,
@@ -41,7 +36,7 @@ const attempt = async (username, password) => {
 
 const auth = ({ username, password }) => attempt(username, password).then(
   ({ id }) => {
-    const token = sign(id, secret);
+    const token = sign(id, process.env.SECRET);
     return { token };
   }
 );

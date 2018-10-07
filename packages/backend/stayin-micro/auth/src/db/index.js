@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { database } = require('../config');
 mongoose.Promise = global.Promise;
 const options = {
     autoIndex: false,
@@ -9,6 +8,9 @@ const options = {
     bufferMaxEntries: 0,
     useNewUrlParser: true
 };
-mongoose.connect(database, options);
+mongoose.connect(process.env.MONGODB, options);
+// Load models
+require('../models/user');
+require('../models/role');
 
 module.exports = mongoose;

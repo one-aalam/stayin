@@ -25,13 +25,3 @@ exports.delete = async(userId) => await User.remove({ _id: userId }, onResp);
 // Additional helpers
 exports.findById = async (userId) => await this.find({_id: userId});
 exports.findByUsername = async (username) => await this.find({ username });
-
-// Admin Seed
-exports.setup = async () => {
-    const role = await new Role({
-        name: 'Administrator',
-        description: 'These users have all access in the project.',
-        type: 'root'
-    }).save();
-    return await this.create({ username: 'admin', email: 'admin@somemail.com', password: 'password', role: role._id });
-}

@@ -1,6 +1,5 @@
 const { send, createError }     = require('micro');
 const { verify }                = require('jsonwebtoken');
-const { secret }                = require('../config');
 
 exports.validateModel = (err) => {
   const errorAttrs = Object.keys(err.errors);
@@ -17,7 +16,7 @@ exports.decode = (req) => {
     throw createError('401', 'Access denied. No token provided.');
   }
   try {
-    return verify(token, secret);
+    return verify(token, process.env.SECRET);
   } catch (ex) {
     throw createError('400', 'Invalid token.');
   }
