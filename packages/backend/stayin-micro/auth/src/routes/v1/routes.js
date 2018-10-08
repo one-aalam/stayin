@@ -77,21 +77,34 @@ const userLogin = async (req, res) => {
   send(res, 200, { token });
 };
 
+const userMe = async (req, res) => {
+  const userId = await req.__user.id;
+  if (!userId) {
+    throw createError(401, 'No active session found. Please login and try again.');
+  }
+  const user = await userSvc.findById(userId);
+  if (!user) {
+    throw createError(401, 'That user does not exist');
+  }
+  send(res, 200, user);
+};
+
 module.exports = cors(router(
     get('/hello/:who', hello),
 
     // GET
     get('/users', execOrErr(canAccess(users))),
-    get('/users/:id', execOrErr(ifIdConforms(userById))),
+    get('/users/:id', execOrErr(canAccess(ifIdConforms(userById)))),
     // POST
     post('/users', execOrErr(validateUserModel(createUser))),
     // DELETE
-    del('/users/:id', delUser),
+    del('/users/:id', execOrErr(canAccess(delUser))),
     // PUT
-    put('/users/:id', validateUserModel(updateUser)),
+    put('/users/:id', execOrErr(validateUserModel(updateUser))),
 
     // AUTH
-    post('/login', userLogin),
+    post('/login', execOrErr(userLogin)),
+    get('/me', execOrErr(canAccess(userMe))),
 
     get('/*', notFound),
 ));

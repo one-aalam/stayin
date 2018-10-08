@@ -51,12 +51,12 @@ const UserSchema = new Schema(
 //   }
 // });
 
-UserSchema.statics.findByUsername = (username, callback) => {
-  this.findOne({ username }, callback);
+UserSchema.statics.findByUsername = function(username, callback) {
+  return this.find({ username }, callback);
 }
 
-UserSchema.statics.findById = (id, callback) => {
-  this.findOne({ _id: id }, callback);
+UserSchema.statics.findById = function(id, callback) {
+  return this.findOne({ _id: id }, callback);
 }
 
 UserSchema.plugin(createdAttrPlugin);
