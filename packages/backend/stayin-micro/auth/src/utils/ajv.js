@@ -1,6 +1,8 @@
 const { json, send } = require('micro');
 const Ajv = require('ajv');
-const ajv = new Ajv();
+const ajv = new Ajv({
+  allErrors: true,
+});
 
 module.exports = exports = (schema, { putBodyInReq = false, errorMsg } = {}) => handler => {
   if (!schema) {
