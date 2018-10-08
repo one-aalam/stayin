@@ -10,7 +10,7 @@ const onResp = (err, result) => {
     return result;
 };
 
-exports.find = async (filters = {}) => await User.find(filters, onResp);
+exports.find = async (filters = {}) => await User.find(filters, onResp).select('-password -updated');
 
 exports.update = async (user) => await User.findOneAndUpdate({_id: user._id}, user, { upsert: true, new: true }).exec();
 
