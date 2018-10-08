@@ -23,5 +23,5 @@ exports.create = async (payload) => await new User({
 exports.delete = async(userId) => await User.remove({ _id: userId }, onResp);
 
 // Additional helpers
-exports.findById = async (userId) => await this.find({_id: userId});
-exports.findByUsername = async (username) => await this.find({ username });
+exports.findById = async (userId) => await User.findById(userId);
+exports.findByUsername = async (username) => await User.findByUsername(username);

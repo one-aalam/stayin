@@ -29,6 +29,11 @@ const RoleSchema = new Schema(
   }
 );
 
+RoleSchema.pre('save', function(next) {
+  this.type = this.type ? this.type : this.name.toLowerCase();
+  next();
+});
+
 RoleSchema.plugin(createdAttrPlugin);
 
 exports.Role = mongoose.model('Role', RoleSchema, 'users_role');

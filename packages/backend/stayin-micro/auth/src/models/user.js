@@ -31,9 +31,9 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false
     },
-    blocked: {
+    active: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     role: {
       type: ObjectId,
@@ -42,6 +42,22 @@ const UserSchema = new Schema(
     }
   }
 );
+
+// UserSchema.set('toJSON', {
+//   transform: function(doc, ret, opt) {
+//       delete ret['updated'];
+//       delete ret['confirmed'];
+//       return ret
+//   }
+// });
+
+UserSchema.statics.findByUsername = (username, callback) => {
+  this.findOne({ username }, callback);
+}
+
+UserSchema.statics.findById = (id, callback) => {
+  this.findOne({ _id: id }, callback);
+}
 
 UserSchema.plugin(createdAttrPlugin);
 UserSchema.plugin(updatedAttrPlugin, { index: true });
