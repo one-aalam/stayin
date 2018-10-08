@@ -4,6 +4,7 @@ const { sign }                        = require('jsonwebtoken');
 const { compareSync }                 = require('bcrypt');
 const rateLimit                       = require('micro-ratelimit');
 const cors                            = require('micro-cors')();
+const pick                            = require('lodash.pick');
 // middleware, sort of ...
 const {
   execOrErr,
@@ -56,13 +57,13 @@ const userById = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const user = await userSvc.update(await json(req));
-  send(res, 200, user);
+  const { username, email, password, created } = await userSvc.update(await json(req));
+  send(res, 200, { username, email, password, created });
 };
 
 const createUser = async (req, res) => {
   const user = await userSvc.create(await json(req));
-  send(res, 201, user);
+  send(res, 201, pick(user, ['_id', 'username', 'email', 'password', 'created']));
 };
 
 const delUser = async (req, res) => {
@@ -83,7 +84,7 @@ module.exports = cors(router(
     get('/users', execOrErr(canAccess(users))),
     get('/users/:id', execOrErr(ifIdConforms(userById))),
     // POST
-    post('/users', validateUserModel(createUser)),
+    post('/users', execOrErr(validateUserModel(createUser))),
     // DELETE
     del('/users/:id', delUser),
     // PUT
