@@ -5,6 +5,7 @@ const { compareSync }                 = require('bcrypt');
 const rateLimit                       = require('micro-ratelimit');
 const cors                            = require('micro-cors')();
 const pick                            = require('lodash.pick');
+const omit                            = require('lodash.omit');
 // middleware, sort of ...
 const {
   execOrErr,
@@ -86,7 +87,7 @@ const userMe = async (req, res) => {
   if (!user) {
     throw createError(401, 'That user does not exist');
   }
-  send(res, 200, user);
+  send(res, 200, omit(user, ['password']));
 };
 
 module.exports = cors(router(
