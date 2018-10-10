@@ -1,5 +1,6 @@
 const { send, createError }     = require('micro');
-const { verify }                = require('jsonwebtoken');
+const url = require('url');
+const { verify } = require('jsonwebtoken');
 
 exports.validateModel = (err) => {
   const errorAttrs = Object.keys(err.errors);
@@ -30,6 +31,7 @@ exports.decode = (req) => {
         err.stack) {
         console.error(err.stack)
       }
+      // identify mongoose and json schema errors and decorate accordingly - console.log(err instanceof mongoose.Error);
       send(res, err.statusCode || 500, {
         error: true,
         message: err.message
@@ -37,9 +39,14 @@ exports.decode = (req) => {
     }
   };
 
-  exports.canAccess = (fn) => async (req, res) => {
+  exports.canAccess = (fn, attachUser = true) => async (req, res) => {
     const user = this.decode(req, res);
     if (user !== null && user !== undefined) {
+      if(attachUser) {
+        req.__user = {
+          id: user
+        };
+      }
       return await fn(req, res)
     }
     throw createError('401', 'Invalid token.'); // or a 404 to prevent information leakage (https://stackoverflow.com/questions/9220432/http-401-unauthorized-or-403-forbidden-for-a-disabled-user)
@@ -59,3 +66,11 @@ exports.decode = (req) => {
       service
     )
   };
+
+  exports.attachQuery = (fn) => async (req, res) => {
+    const { query } = url.parse(request.url, true);
+    req.query = query;
+    return await fn(req, res);
+  }
+
+
