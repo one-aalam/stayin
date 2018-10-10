@@ -2464,6 +2464,10 @@ isobject@^3.0.0, isobject@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
 
+joi-password-complexity@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/joi-password-complexity/-/joi-password-complexity-2.0.1.tgz#7a65485a366447a222542d9c1ea9c1589000d6bd"
+
 joi@^13.7.0:
   version "13.7.0"
   resolved "https://registry.yarnpkg.com/joi/-/joi-13.7.0.tgz#cfd85ebfe67e8a1900432400b4d03bbd93fb879f"

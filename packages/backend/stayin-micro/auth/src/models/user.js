@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const PasswordComplexity = require('joi-password-complexity');
 const createdAttrPlugin = require('./plugins/attr-created');
 const updatedAttrPlugin = require('./plugins/attr-updated');
 
@@ -54,7 +55,7 @@ const UserSchema = new Schema(
 const UserValidationSchema = Joi.object({
   username: Joi.string().alphanum().min(5).max(50).required(),
   email: Joi.string().email({ minDomainAtoms: 2 }),
-  password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+  password: new PasswordComplexity(),
 });
 
 UserSchema.statics.findByUsername = function(username, callback) {
