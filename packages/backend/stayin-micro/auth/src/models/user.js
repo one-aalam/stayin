@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-require('mongoose-schema-jsonschema')(mongoose); // extend with JSON schema
+const Joi = require('joi');
 const createdAttrPlugin = require('./plugins/attr-created');
 const updatedAttrPlugin = require('./plugins/attr-updated');
 
@@ -51,6 +51,12 @@ const UserSchema = new Schema(
 //   }
 // });
 
+const UserValidationSchema = Joi.object({
+  username: Joi.string().alphanum().min(5).max(50).required(),
+  email: Joi.string().email({ minDomainAtoms: 2 }),
+  password: Joi.string().regex(/^[a-zA-Z0-9]{3,30}$/),
+});
+
 UserSchema.statics.findByUsername = function(username, callback) {
   return this.find({ username }, callback);
 }
@@ -62,5 +68,6 @@ UserSchema.statics.findById = function(id, callback) {
 UserSchema.plugin(createdAttrPlugin);
 UserSchema.plugin(updatedAttrPlugin, { index: true });
 
+
 exports.User = mongoose.model('User', UserSchema, 'users_user');
-exports.UserJsonSchema = UserSchema.jsonSchema();
+exports.UserValidationSchema = UserValidationSchema;

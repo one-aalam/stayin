@@ -12,12 +12,10 @@ const {
   canAccess,
   ifIdConforms
 }                                     = require('../../utils');
-const validation                       = require('../../utils/ajv');
 // User service
 const userSvc                         = require('../../service').user;
 // Schemas
-const UserSchema                      = require('../../models/user').UserJsonSchema;
-const validateUserModel = validation(UserSchema);
+const { validateUserInput } = require('../../models/validators');
 
 // USER
 const hello = rateLimit({window: 5000, limit: 2}, (req, res) => {
@@ -92,20 +90,15 @@ const userMe = async (req, res) => {
 
 module.exports = cors(router(
     get('/hello/:who', hello),
-
-    // GET
+    // Protected
     get('/users', execOrErr(canAccess(users))),
     get('/users/:id', execOrErr(canAccess(ifIdConforms(userById)))),
-    // POST
-    post('/users', execOrErr(validateUserModel(createUser))),
-    // DELETE
     del('/users/:id', execOrErr(canAccess(delUser))),
-    // PUT
-    put('/users/:id', execOrErr(validateUserModel(updateUser))),
-
-    // AUTH
-    post('/login', execOrErr(userLogin)),
+    put('/users/:id', execOrErr(validateUserInput(canAccess(updateUser)))),
     get('/me', execOrErr(canAccess(userMe))),
-
+    // Public
+    post('/login', execOrErr(userLogin)),
+    post('/users', execOrErr(validateUserInput(createUser))),
+    // default
     get('/*', notFound),
 ));
